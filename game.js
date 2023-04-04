@@ -14,7 +14,7 @@ let availableQuestions = [];
 
 let questions = [];
 
-fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple")
+fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple&encode=base64")
     .then(res => {
         return res.json();
     }) 
@@ -22,7 +22,7 @@ fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=mul
         console.log(loadedQuestions.results);
         questions = loadedQuestions.results.map(loadedQuestion => {
             const formattedQuestion = {
-                question: loadedQuestion.question
+                question: atob(loadedQuestion.question)
             };
 
             const answerChoices = [ ...loadedQuestion.incorrect_answers];
@@ -30,7 +30,7 @@ fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=mul
             answerChoices.splice(formattedQuestion.answer -1, 0, loadedQuestion.correct_answer);
 
             answerChoices.forEach((choice, index) => {
-                formattedQuestion["choice" + (index + 1)] = choice;
+                formattedQuestion["choice" + (index + 1)] = atob(choice);
             });
             return formattedQuestion;
         });
@@ -42,7 +42,7 @@ fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=mul
 
 //CONSTANTS
 const CORRECT_BONUS = 10;
-const MAX_QUESTIONS = 3;
+const MAX_QUESTIONS = 10;
 
 startGame = () => {
     questionCounter = 0;
